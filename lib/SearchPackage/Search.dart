@@ -18,13 +18,16 @@ class _SearchPageState extends State<SearchPage> {
   Map data = {};
   Future<void> search() async {
     try {
+      var url = "http://192.168.37.1:8000/api/search/"+;
       debugPrint(textEditingController.text);
-      var response = await http
-          .post(Uri.parse(API.searchApi + '?${textEditingController.text}'));
-
-      data = jsonDecode(response.body);
+      var response = await http.get(
+        Uri.parse('http://192.168.37.1:8000/api/search/CTAFT00001616'),
+      );
+      debugPrint(response.body);
+      data = jsonDecode(response.body)[0];
+      print(data.toString());
     } catch (e) {
-      debugPrint('error');
+      debugPrint(e.toString());
       data = {};
       _scaffoldKey.currentState!.showSnackBar(SnackBar(
         content: Text(
@@ -104,6 +107,9 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                           TextField(
                             controller: textEditingController,
+                            onSubmitted: (s) {
+                              search();
+                            },
                             decoration: InputDecoration(
                               prefixIcon: const Icon(
                                 Icons.search,
@@ -126,38 +132,42 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                             ),
                           ),
-                          ElevatedButton(
-                              onPressed: () {
-                                search();
-                              },
-                              child: Text('بحث')),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Container(
-                                  child: Text('id : ${data['id'] ?? ''}')),
-                              Container(
-                                  child: Text('name : ${data['name'] ?? ''}')),
-                              Container(
-                                  child: Text(
-                                      'Tracking Number : ${data['tracking_number'] ?? ''}')),
-                              Container(
-                                  child:
-                                      Text('phone : ${data['phone'] ?? ''}')),
-                              Container(
-                                  child:
-                                      Text('status : ${data['status'] ?? ''}')),
-                              Container(
-                                  child: Text(
-                                      'Status Description : ${data['StatusDescription'] ?? ''}')),
-                              Container(
-                                  child: Text(
-                                      'Address : ${data['address'] ?? ''}')),
-                              Container(
-                                  child: Text(
-                                      'area id : ${data['area_id'] ?? ''}')),
-                            ],
-                          )
+                          // ElevatedButton(
+                          //     onPressed: () {
+                          //
+                          //     },
+                          //     child: Text('بحث')),
+                          data['id'] == null
+                              ? Container()
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                        child:
+                                            Text('id : ${data['id'] ?? ''}')),
+                                    Container(
+                                        child: Text(
+                                            'name : ${data['name'] ?? ''}')),
+                                    Container(
+                                        child: Text(
+                                            'Tracking Number : ${data['tracking_number'] ?? ''}')),
+                                    Container(
+                                        child: Text(
+                                            'phone : ${data['phone'] ?? ''}')),
+                                    Container(
+                                        child: Text(
+                                            'status : ${data['status'] ?? ''}')),
+                                    Container(
+                                        child: Text(
+                                            'Status Description : ${data['StatusDescription'] ?? ''}')),
+                                    Container(
+                                        child: Text(
+                                            'Address : ${data['address'] ?? ''}')),
+                                    Container(
+                                        child: Text(
+                                            'area id : ${data['area_id'] ?? ''}')),
+                                  ],
+                                )
                         ],
                       ),
                     ),
